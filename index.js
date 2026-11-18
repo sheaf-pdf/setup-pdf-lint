@@ -1,6 +1,7 @@
 // Installs pdf-lint from its GitHub release: the archive for this runner's
 // platform, checked against the release's SHA-256, unpacked into the
-// runner's tool cache with the qpdf it bundles, and put on the PATH.
+// runner's tool cache (0.1.x's with the qpdf it bundles; from 0.2.0 it
+// needs nothing beside it), and put on the PATH.
 //
 // No dependencies: Node's fetch and crypto, and the system's tar, which on
 // Windows reads zip archives too.
@@ -190,8 +191,9 @@ async function main() {
     }
   }
 
-  // What it decodes with: the qpdf beside it, unless PDF_LINT_QPDF names
-  // another.
+  // What 0.1.x decodes with: the qpdf beside it, unless PDF_LINT_QPDF
+  // names another. From 0.2.0, it decodes by itself, and --version names
+  // no qpdf.
   const ran = spawnSync(binary, ['--version'], { encoding: 'utf8' });
   if (ran.error || ran.status !== 0) {
     throw new Error(`pdf-lint ${version} doesn't run: ${ran.error?.message ?? ran.stderr.trim()}`);

@@ -24,7 +24,9 @@ test('a version is asked for as itself, with a v, or as its tag; latest is the n
   for (const input of ['0.1.0', 'v0.1.0', 'pdf-lint-v0.1.0', ' 0.1.0 ']) {
     assert.equal(requested(input), '0.1.0', input);
   }
-  assert.equal(requested('1.2.3-rc.1'), '1.2.3-rc.1');
+  for (const input of ['0.2.0-rc.1', 'v0.2.0-rc.1', 'pdf-lint-v0.2.0-rc.1']) {
+    assert.equal(requested(input), '0.2.0-rc.1', input);
+  }
   for (const input of ['0.1', '1', 'newest', 'pdf-tokenizer-v0.1.0', '0.1.0; rm -rf /']) {
     assert.throws(() => requested(input), /give one such as 0\.1\.0, or latest/, input);
   }

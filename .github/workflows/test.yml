@@ -1,8 +1,11 @@
 name: Test
 
 # The unit tests, then the action itself on each platform pdf-lint has a
-# release archive for, a pinned version and the newest: pdf-lint must run
-# from the PATH and decode through the qpdf beside it. GitHub has no Intel
+# release archive for, a pinned version, a pre-release (which `latest`
+# never takes) and the newest: pdf-lint must run
+# from the PATH and read a compressed file (test/compressed.pdf, its
+# objects in an object stream), which 0.1.x decodes through the qpdf
+# beside it and 0.2.0 by itself. GitHub has no Intel
 # macOS runner to try the Intel archive on: the unit tests check it's the
 # one an Intel Mac takes, and pdf-lint's release workflow checks it runs.
 
@@ -35,7 +38,7 @@ jobs:
       matrix:
         # Linux x86_64 and aarch64, macOS on Apple silicon, Windows x64.
         os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, windows-latest]
-        version: ["0.1.0", latest]
+        version: ["0.1.0", "0.2.0-rc.1", latest]
     steps:
       - uses: actions/checkout@v7
         with:
@@ -44,7 +47,7 @@ jobs:
         id: setup
         with:
           version: ${{ matrix.version }}
-      - name: pdf-lint runs, and decodes through its qpdf
+      - name: pdf-lint runs, and reads a compressed file
         shell: bash
         env:
           INSTALLED: ${{ steps.setup.outputs.version }}
@@ -58,13 +61,9 @@ jobs:
           fi
           pdf-lint --version | tee version.txt
           grep -q "^pdf-lint $INSTALLED$" version.txt
-          qpdf="$DIR/qpdf/bin/qpdf"
-          if command -v cygpath >/dev/null; then qpdf=$(cygpath -u "$qpdf"); fi
-          grep -q "qpdf version .*qpdf" version.txt
-          # A file whose catalog and page tree are in an object stream,
-          # which only qpdf decodes.
-          "$qpdf" --empty --object-streams=generate "$RUNNER_TEMP/compressed.pdf"
-          pdf-lint "$RUNNER_TEMP/compressed.pdf"
+          # Its catalog and page tree are in an object stream: read, and
+          # clean.
+          pdf-lint test/compressed.pdf
       # Again, from the tool cache.
       - uses: ./
         id: again
