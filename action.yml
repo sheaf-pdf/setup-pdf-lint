@@ -6,7 +6,7 @@ branding:
 
 inputs:
   version:
-    description: The pdf-lint version to install, such as 0.1.0, or latest
+    description: The pdf-lint version to install, such as 0.2.0 or the pre-release 0.2.0-rc.1, or latest (the newest release, never a pre-release)
     required: false
     default: latest
 

@@ -19,7 +19,7 @@ steps:
 
 | Input | |
 |---|---|
-| `version` | The pdf-lint version to install, such as `0.2.0` (`v0.2.0` and `pdf-lint-v0.2.0` work too), or `latest`, the default. Pin one, so that a new release doesn't change what a workflow finds. |
+| `version` | The pdf-lint version to install, such as `0.2.0` (`v0.2.0` and `pdf-lint-v0.2.0` work too), or `latest`, the default. Pin one, so that a new release doesn't change what a workflow finds. A pre-release, such as `0.2.0-rc.1`, is installed only when it's named: `latest` is the newest release, never a pre-release. |
 
 ## Outputs
 
